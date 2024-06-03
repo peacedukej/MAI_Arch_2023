@@ -10,12 +10,30 @@ services:
     volumes:
       - C:/Users/Rabinowitz/Desktop/MAI_ARCH/MAI_Arch_2023/Задание 2/rest_api:/messenger/rest_api/
       - C:/Users/Rabinowitz/Desktop/MAI_ARCH/MAI_Arch_2023/Задание 2/packages:/messenger/packages
-    #depends_on:
-    #  - account_db
     networks:
       - app_net
     env_file:
       - ./.env
+
+  db:
+    container_name: postgres
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123103Pp
+      - PGDATA=/data/postgres
+      - POSTGRES_DB=mai_arch_db
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - arch-network
+
 
 networks:
   app_net:
