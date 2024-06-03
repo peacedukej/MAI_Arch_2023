@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  messenger:
+    build: .
+    container_name: messenger
+    ports:
+      - 8000:8000
+    volumes:
+      - C:/Users/Rabinowitz/Desktop/MAI_ARCH/MAI_Arch_2023/Задание 2/rest_api:/messenger/rest_api/
+      - C:/Users/Rabinowitz/Desktop/MAI_ARCH/MAI_Arch_2023/Задание 2/packages:/messenger/packages
+    #depends_on:
+    #  - account_db
+    networks:
+      - app_net
+    env_file:
+      - ./.env
+
+networks:
+  app_net:
+    driver: bridge
+
+volumes:
+  pg_data:
