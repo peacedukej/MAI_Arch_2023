@@ -6,7 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
 import rest_api.models.schemas as schemas 
 from rest_api.controllers.connect_db import get_db
-
+from jose import jwt
+from datetime import datetime, timedelta
+from rest_api.config import SECRET_KEY, ALGORITHM, JWT_EXPIRATION_TIME_MINUTES
 from passlib.context import CryptContext
 
 # Создание экземпляра класса CryptContext для хэширования пароля
@@ -21,6 +23,11 @@ responses = {
     423: {"description": "Не удалось прочитать данные"},
     424: {"description": "Пользователь с таким email уже зарегистрирован"},
 }
+
+def create_jwt_token(username: str) -> str:
+    expiration_time = datetime.utcnow() + timedelta(minutes=JWT_EXPIRATION_TIME_MINUTES)
+    payload = {"sub": username, "exp": expiration_time}
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
 @router.post("/", responses=responses)
@@ -38,7 +45,7 @@ async def register_user(user_data: schemas.Registration, db: AsyncSession = Depe
 
 # Хэширование пароля
     hashed_password = pwd_context.hash(user_data.password)
-
+    token = create_jwt_token(user_data.login)
 
     try:
         user_insert_query = insert(User).values(
@@ -46,6 +53,7 @@ async def register_user(user_data: schemas.Registration, db: AsyncSession = Depe
             last_name=user_data.last_name,
             login=user_data.login,
             password=hashed_password,
+            token = token
         )
 
         result = await db.execute(user_insert_query)
@@ -55,3 +63,9 @@ async def register_user(user_data: schemas.Registration, db: AsyncSession = Depe
                             detail=f"Не удалось записать данные, {e}")
 
     await db.commit()
+
+    return {"first_name": user_data.first_name,
+            "last_name": user_data.last_name,
+            "login": user_data.login,
+            "hashed_password": hashed_password,
+            "token": token,}

@@ -6,7 +6,7 @@ from rest_api.routers.register_user import router as register_users_router
 from rest_api.routers.delete_user import router as delete_users_router
 from rest_api.routers.update_user import router as update_users_router
 from rest_api.routers.find_user import router as find_users_router
-
+from rest_api.routers.login_with_token import router as login_with_token_router
 
 
 
@@ -24,25 +24,31 @@ app.add_middleware(
 
 app.include_router(
     router=register_users_router,
-    tags=["Регистрация"], 
+    tags=["Добавить"], 
     prefix="/add",
 )
 
 app.include_router(
+    router=login_with_token_router,
+    tags=["Авторизация через токен"], 
+    prefix="/token",
+)
+
+app.include_router(
     router=delete_users_router,
-    tags=["Регистрация"], 
+    tags=["Удалить"], 
     prefix="/delete",
 )
 
 app.include_router(
     router=update_users_router,
-    tags=["Регистрация"], 
+    tags=["Обновить"], 
     prefix="/update",
 )
 
 app.include_router(
     router=find_users_router,
-    tags=["Регистрация"], 
+    tags=["Найти по маске"], 
     prefix="/find",
 )
 

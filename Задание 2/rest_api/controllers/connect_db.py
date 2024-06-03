@@ -9,15 +9,3 @@ async def get_db():
         yield db 
     finally: 
         await db.close()
-
-# async def get_db():
-#     async with SessionLocal() as session:
-#         try:
-#             yield session
-#         finally:
-#             await session.close()
-
-
-# async def get_db():
-#     async with SessionLocal() as session:
-#         yield session

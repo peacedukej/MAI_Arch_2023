@@ -15,6 +15,7 @@ class User(Base):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     password = Column(String, nullable=False)
+    token = Column(String)
 
 class GroupChat(Base):
     __tablename__ = "group_chats"
