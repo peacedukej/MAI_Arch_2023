@@ -53,6 +53,15 @@ services:
     networks:
       - app_net
 
+  wrk:
+    build:
+      context: .
+      dockerfile: Dockerfile.wrk
+    container_name: wrk
+    networks:
+      - app_net
+    entrypoint: ["sleep", "infinity"]  # Контейнер будет в состоянии ожидания, пока вы не выполните команду wrk вручную
+
 networks:
   app_net:
     driver: "bridge"

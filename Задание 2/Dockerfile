@@ -5,12 +5,7 @@ WORKDIR /messenger
 COPY ./requirements.txt /messenger/requirements.txt
 COPY ./.env /messenger/.env
 RUN pip install -r requirements.txt
-#RUN pip install -r requirements.txt --index-url https://mirrors.aliyun.com/pypi/simple/
-#COPY ./requirements.txt /messenger/requirements.txt
-#COPY ./packages /messenger/packages
-#RUN pip install --no-index --find-links=./packages -r requirements.txt
 
 COPY ./rest_api /messenger/rest_api
 
-#ENTRYPOINT ["python3", "rest_api/controllers/copy_pdf.py"]
 ENTRYPOINT ["uvicorn", "rest_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--env-file", ".env"]

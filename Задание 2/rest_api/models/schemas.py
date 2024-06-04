@@ -27,3 +27,7 @@ class User(BaseModel):
 # Схема данных для поиска пользователей
 class UserSearch(BaseModel):
     name_mask: str
+
+class GetUser(BaseModel):
+    id: int
+

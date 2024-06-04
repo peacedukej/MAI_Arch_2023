@@ -7,7 +7,7 @@ from rest_api.routers.delete_user import router as delete_users_router
 from rest_api.routers.update_user import router as update_users_router
 from rest_api.routers.find_user import router as find_users_router
 from rest_api.routers.login_with_token import router as login_with_token_router
-
+from rest_api.routers.get_user import router as get_user_router
 
 
 app = FastAPI()
@@ -52,3 +52,9 @@ app.include_router(
     prefix="/find",
 )
 
+
+app.include_router(
+    router=get_user_router,
+    tags=["Получить данные о пользователе по ID"], 
+    prefix="/get",
+)

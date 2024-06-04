@@ -55,7 +55,6 @@ async def register_user(user_data: schemas.Registration, db: AsyncSession = Depe
        raise HTTPException(status_code=424,
                            detail="Пользователь с таким login уже зарегистрирован")
 
-
 # Хэширование пароля
     hashed_password = pwd_context.hash(user_data.password)
     token = create_jwt_token(user_data.login)
