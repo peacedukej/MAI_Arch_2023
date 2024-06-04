@@ -10,6 +10,8 @@ from jose import jwt
 from datetime import datetime, timedelta
 from rest_api.config import SECRET_KEY, ALGORITHM, JWT_EXPIRATION_TIME_MINUTES
 from passlib.context import CryptContext
+from rest_api.redis.redis import redis  
+import json
 
 # Создание экземпляра класса CryptContext для хэширования пароля
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -28,6 +30,17 @@ def create_jwt_token(username: str) -> str:
     expiration_time = datetime.utcnow() + timedelta(minutes=JWT_EXPIRATION_TIME_MINUTES)
     payload = {"sub": username, "exp": expiration_time}
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+
+async def get_user_from_cache(login: str):
+    user_json = await redis.get(f"user:{login}")
+    if user_json:
+        user_data = json.loads(user_json)
+        return user_data
+    return None
+
+async def set_user_to_cache(user_data: dict):
+    await redis.set(f"user:{user_data['login']}", json.dumps(user_data), ex=60*60)  # Кешируем на 1 час
 
 
 @router.post("/", responses=responses)
@@ -64,8 +77,15 @@ async def register_user(user_data: schemas.Registration, db: AsyncSession = Depe
 
     await db.commit()
 
-    return {"first_name": user_data.first_name,
-            "last_name": user_data.last_name,
-            "login": user_data.login,
-            "hashed_password": hashed_password,
-            "token": token,}
+    user_dict = {
+        "first_name": user_data.first_name,
+        "last_name": user_data.last_name,
+        "login": user_data.login,
+        "hashed_password": hashed_password,
+        "token": token,
+    }
+
+    # Кешируем данные пользователя
+    await set_user_to_cache(user_dict)
+
+    return user_dict

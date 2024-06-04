@@ -10,6 +10,9 @@ services:
     volumes:
       - ./rest_api:/messenger/rest_api/
       - ./packages:/messenger/packages
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     networks:
       - app_net
     env_file:
@@ -23,6 +26,7 @@ services:
       - POSTGRES_PASSWORD=123103Pp
       - PGDATA=/data/postgres
       - POSTGRES_DB=mai_arch_db
+      
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -37,6 +41,17 @@ services:
     networks:
       - app_net
 
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - app_net
 
 networks:
   app_net:

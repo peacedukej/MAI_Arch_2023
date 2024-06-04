@@ -8,7 +8,7 @@ class Registration(BaseModel):
     last_name: str
     login: str
     password: str
-    token: str
+    #token: str
 
 # Схема данных пользователя для обновления
 class UserUpdate(BaseModel):
