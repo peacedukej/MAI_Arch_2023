@@ -1,0 +1,10 @@
+# FROM ubuntu:20.04
+
+# RUN apt-get update && \
+#     apt-get install -y build-essential libssl-dev git unzip && \
+#     git clone https://github.com/wg/wrk.git && \
+#     cd wrk && \
+#     make && \
+#     cp wrk /usr/local/bin
+
+# ENTRYPOINT ["wrk"]

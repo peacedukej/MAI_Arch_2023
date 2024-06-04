@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+
+  messenger:
+    build: .
+    container_name: messenger-mongo
+    ports:
+      - 8000:8000
+    volumes:
+      - ./rest_api:/messenger/rest_api/
+      #- ./packages:/messenger/packages
+    # environment:
+    #   - REDIS_HOST=redis
+    #   - REDIS_PORT=6379
+    networks:
+      - app_net
+    env_file:
+      - ./.env
+  
+  
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-data:/data/db   # Для сохранения данных MongoDB между перезапусками контейнера
+    networks:
+      - app_net
+  # db:
+  #   container_name: postgres
+  #   image: postgres:15
+  #   environment:
+  #     - PGUSER=postgres
+  #     - POSTGRES_PASSWORD=123103Pp
+  #     - PGDATA=/data/postgres
+  #     - POSTGRES_DB=mai_arch_db
+      
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #   volumes:
+  #     - ./postgres-data:/data/postgres
+  #     - ./Postgres_DDL_DML/create.sql:/docker-entrypoint-initdb.d/init.sql
+  #   networks:
+  #     - app_net
+
+
+networks:
+  app_net:
+    driver: "bridge"
+    external: false
