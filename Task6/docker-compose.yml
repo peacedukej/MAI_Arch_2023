@@ -4,7 +4,7 @@ services:
 
   messenger:
     build: .
-    container_name: messenger-m
+    container_name: messenger-m2
     ports:
       - 8000:8000
     volumes:
@@ -19,7 +19,7 @@ services:
       - ./.env
 
   db:
-    container_name: postgres-m
+    container_name: postgres-m2
     image: postgres:15
     environment:
       - PGUSER=postgres
@@ -43,7 +43,7 @@ services:
 
   redis:
     image: redis
-    container_name: redis-m
+    container_name: redis-m2
     restart: always
     ports:
       - 6379:6379
@@ -53,19 +53,18 @@ services:
     networks:
       - app_net
 
-  # api_gateway:
-  #   build: .
-  #   container_name: api_gateway
-  #   volumes:
-  #     - ./api_gateway/api_gateway.py:/app/api_gateway.py
-  #   working_dir: /app
-  #   command: uvicorn api_gateway:app --host 0.0.0.0 --port 8001
-  #   ports:
-  #     - "8001:8001"
-  #   depends_on:
-  #     - messenger
-  #   networks:
-  #     - app_net
+  api_gateway:
+    build: .
+    container_name: api_gateway-m2
+    volumes:
+      - ./api_gateway.py:/messenger/api_gateway.py
+    command: uvicorn api_gateway:app --host 0.0.0.0 --port 8001
+    ports:
+      - "8001:8001"
+    # depends_on:
+    #   - messenger
+    networks:
+      - app_net
   # wrk:
   #   build:
   #     context: .
